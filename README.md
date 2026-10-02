@@ -37,7 +37,31 @@ DSH 定时任务插件：用标准 5 段 cron 表达式调度 bash 命令，支�
 
 ## Installation / 安装
 
-### 1. Mount the plugin / 挂载插件
+### 方式一：一条命令（推荐）/ One command (recommended)
+
+```bash
+dsh plugin --profile web add github:AmeliaCai67/dsh-cron
+```
+
+这条命令会做三件事：
+
+1. 把包装进 profile 的依赖；
+2. 因为包里声明了 **`dsh.bundle`**，顺带把 `dsh-cron-scheduler` 加进 `dsh.profile.bundles`；
+3. profile 启动时合并**包内自带**的 `cordis.patch.yml`（就是下面方式二那段 `insert`）。
+
+**不用手改任何 profile 文件，也不用重启前先手动挂载。**
+
+> ⚠️ **如果你之前已经手写过下面的 `insert` 行，切换过来之前请先删掉它** ——
+> 否则会挂载两次（两个调度器实例、同一个任务表、任务重复触发）。
+
+> 📦 **为什么走 GitHub 而不是 npm 包名**：`dsh-cron-scheduler` 这个 npm 名字已被
+> [另一位作者](https://www.npmjs.com/package/dsh-cron-scheduler)占用（是个同名但不同的实现），
+> 所以本仓库只能通过 GitHub 安装。
+
+`vaultPath` 装完的默认值是 `process.env.DSH_CWD ?? homedir()`，**在设置页 →「定时任务」里改**。
+（刻意不在包内的 patch 里写死路径 —— 那样别的用户装完会指向不存在的目录。）
+
+### 方式二：手动挂载 / Manual mount
 
 ```yaml
 # ~/.dsh/profiles/web/cordis.patch.yml
@@ -49,16 +73,13 @@ DSH 定时任务插件：用标准 5 段 cron 表达式调度 bash 命令，支�
         notifyWechat: true                 # master switch for failure notification
 ```
 
-> `vaultPath` defaults to `process.env.DSH_CWD ?? homedir()` when omitted — set it explicitly in production.
-> 未配置时 `vaultPath` 默认取 `process.env.DSH_CWD ?? homedir()`——生产环境请显式配置。
+> `vaultPath` 省略时默认 `process.env.DSH_CWD ?? homedir()`。
+> 改动需重启 DSH 生效（插件**源码**改动`dsh-hmr` 不监听，只能重启；只改配置则会热重载）。
 
-Restart DSH for the change to take effect. / 改动需重启 DSH 生效。
+### 前端面板 / Web UI panel
 
-### 2. Client bundle (web UI) / 前端面板（可选）
-
-The settings panel requires the client half to be bundled into the web profile. The plugin ships `lib/client.js` for this purpose; wire it through your profile's bundle patch (`dsh.bundle.patch` / `dsh.profile.bundles`) as you would for any other plugin with a client.
-
-设置页面板需要将客户端半区打进 web profile 的 bundle（通过 `dsh.bundle.patch` / `dsh.profile.bundles`，与其它带 client 的插件一致）。
+`lib/client.js` 提供设置页面板，由上面的 `dsh.bundle` 自动带进 web profile。
+**装了就用，不需要额外配置。**
 
 ## Usage / 用法
 

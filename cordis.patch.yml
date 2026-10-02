@@ -1,0 +1,22 @@
+# dsh-cron-scheduler bundle patch
+#
+# 这是发布包里的 `dsh.bundle.patch` 层。通过官方 CLI 安装时：
+#
+#   dsh plugin --profile web add github:AmeliaCai67/dsh-cron
+#
+# 命令会对照已装包 reconcile `dsh.profile.bundles`，看到这个声明就把
+# `dsh-cron-scheduler` 追加进 bundle 栈；profile 启动时合并【本文件】——
+# 效果等同于在 profile 的 cordis.patch.yml 里手写下面这段 insert。
+# **不用改任何 profile 文件，一条命令装好并挂上。**
+#
+# ⚠️ 如果你之前已经在 profile 的 cordis.patch.yml 里手写了 cron-scheduler 的
+#    insert 行，**切换到这个渠道前请先删掉那行** —— 否则会挂载两次
+#    （两个调度器实例，同一个任务表，会重复触发）。
+#
+# ⚠️ config 故意留空：vaultPath 的默认值是 `process.env.DSH_CWD ?? homedir()`，
+#    每个用户在设置页里自己配。**绝对不要在这里硬编码某台机器的路径** ——
+#    dsh-meme 有过前车之鉴：patch 里写死了某台机器的 memeRoot，别人装完指向
+#    不存在的目录，插件直接起不来。
+- insert:
+    - id: cron-scheduler
+      name: dsh-cron-scheduler

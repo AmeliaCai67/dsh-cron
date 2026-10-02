@@ -10,6 +10,9 @@
     "./package.json": "./package.json"
   },
   "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
     "client": {
       "platform": "web"
     }
@@ -17,12 +20,27 @@
   "files": [
     "lib/index.js",
     "lib/client.js",
-    "LICENSE"
+    "LICENSE",
+    "cordis.patch.yml",
+    "README.md"
   ],
   "license": "MIT",
   "peerDependencies": {
     "react": "^18.2.0",
     "@deepseek-ai/schemastery": "^3.18.1",
     "@deepseek-ai/dsh-tools": ">=0.1.0-rc.6 <0.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmeliaCai67/dsh-cron.git"
+  },
+  "homepage": "https://github.com/AmeliaCai67/dsh-cron",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cron",
+    "scheduler",
+    "plugin",
+    "定时任务"
+  ]
 }
