@@ -19,6 +19,22 @@ DSH 定时任务插件：用标准 5 段 cron 表达式调度 bash 命令，支�
 - **Entry points** — Settings page management panel + Plugins page card + model tool `scheduled_task` + runtime skill `scheduled-tasks`
   - **入口** — 设置页管理面板 + Plugins 页卡片 + 模型工具 `scheduled_task` + 运行时 skill `scheduled-tasks`
 
+## DSH version compatibility / DSH 版本兼容
+
+**Requires DSH ≥ 0.1.0-rc.6, including 0.2.0.** ｜ **要求 DSH ≥ 0.1.0-rc.6，含 0.2.0。**
+
+**`v1.2.0` 在 DSH 0.2.0 上跑不起来** —— 下面三处 0.2.0 的接口/结构变更它都没适配。
+`v1.2.1` 修好了：
+
+| 变更 | 0.1.x | 0.2.0 | 本插件的处理 |
+|---|---|---|---|
+| **peer 兼容闸门** | 没有 | **新增** | peer 范围从 `^0.1.0-rc.6` 放宽为 `>=0.1.0-rc.6 <0.3.0`。<br>⚠️ **不收窄就会被静默禁用** —— DSH 只打一行 `skipping profile` warning，**退出码仍是 0**，很容易以为是别的问题 |
+| **shell 服务** | `ctx.shell.run(spec)` 直接返回结果 | `ctx.shell.execute(spec)` 返回**句柄**，要再 `await exec.result()` | 已改。不改的话每次执行都报 `执行失败: ctx.shell.run is not a function` |
+| **插件页插槽** | `settings.plugin.item` | 改名 `settings.plugins.tab` | 已改。不改的话只是插件页那张卡片不显示（**优雅降级，不崩**） |
+
+> 上面第一条是本插件在 0.2.0 上「装了但完全没反应」的真正原因 —— 它连加载都没通过。
+> 排查方法：`dsh --profile web --help` 看有没有 `skipping profile bundle` / `disabling profile plugin row`。
+
 ## Installation / 安装
 
 ### 1. Mount the plugin / 挂载插件
@@ -113,6 +129,20 @@ node --check lib/index.js && node --check lib/client.js   # syntax
 npm pack --dry-run                                        # inspect tarball contents
 npm pack                                                  # build tarball
 ```
+
+## Changelog / 变更记录
+
+### 1.2.1
+
+- **适配 DSH 0.2.0**（1.2.0 在 0.2.0 上跑不起来）：
+  - `ctx.shell.run()` → `ctx.shell.execute()` + `await exec.result()`（0.2.0 返回的是句柄）
+  - peer 范围 `^0.1.0-rc.6` → `>=0.1.0-rc.6 <0.3.0`（否则被 0.2.0 的兼容闸门静默禁用）
+  - 插件页插槽 `settings.plugin.item` → `settings.plugins.tab`
+- 无功能变化。
+
+### 1.2.0
+
+- 初始发布：cron 调度、任务分级、失败通知、自动重试、冒烟测试。
 
 ## License / 许可证
 
