@@ -2,3 +2,6 @@ node_modules/
 *.tgz
 *.log
 .DS_Store
+
+# 本地备份（不上游）
+*.bak-*
