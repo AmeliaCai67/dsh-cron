@@ -1,6 +1,6 @@
 {
   "name": "dsh-cron-scheduler",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "DSH 全局定时任务插件：5 段 cron 调度执行 bash 命令；任务分级(安全/重要) + 失败微信通知 + 自动重试 + 冒烟测试；设置页管理面板 + Plugins 页卡片 + 模型工具 scheduled_task + 运行时 skill scheduled-tasks。",
   "type": "module",
   "main": "lib/index.js",
