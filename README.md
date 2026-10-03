@@ -38,6 +38,16 @@ That's the whole install. It installs the package, registers it as a profile bun
 > The first row is the real reason this plugin appeared to "install but do nothing" on 0.2.0 — it never got loaded at all.
 > To diagnose: run `dsh --profile web --help` and look for `skipping profile bundle` / `disabling profile plugin row`.
 
+**`v1.2.2` also fails on DSH `0.2.0-rc.2` and later** — a fourth breakage, fixed in `v1.3.0`:
+
+| Change | Before | Now | What this plugin does |
+|---|---|---|---|
+| **schemastery API** | `z.string().optional()` | **`.optional()` removed** — schemas are optional by default; write `.required()` to opt in | Fixed. Without it the plugin fails to import: `TypeError: z.string(...).optional is not a function`. ⚠️ The peer range (`^3.18.1`) does **not** catch this, so it installs fine and only breaks on your **next DSH restart**. |
+
+> That last point is worth remembering generally: **a plugin can be broken for days without any symptom**,
+> because a *running* DSH process keeps using the module graph it loaded at startup.
+> Nothing shows up in the log until you restart.
+
 ---
 
 ## Installation
@@ -160,6 +170,13 @@ When publishing, remember that `cordis.patch.yml` **must stay in the `files` whi
 ---
 
 ## Changelog
+
+### 1.3.0
+
+- **Fixed: the plugin does not load on DSH `0.2.0-rc.2` and later.** `schemastery` 3.18.x removed `.optional()`; the config schema used `z.string().optional()`, which threw at import time (`TypeError: z.string(...).optional is not a function`). Schemas are optional by default, so the call is simply gone. See [DSH version compatibility](#dsh-version-compatibility).
+- **Settings panel: the task list is now collapsible (tree-style).** Each task shows name / status badges / cron / next run plus a one-line command preview; click the title row to expand the full command, smoke result, last run + output, and the action buttons. The create form is collapsed behind「＋ 新建任务」, and there are「全部展开 / 全部折叠」buttons. Long output no longer floods the page.
+- **Copy buttons** on the command block and the last-run output block (top-right corner; falls back to `execCommand` when `navigator.clipboard` is unavailable).
+- Delete now asks for confirmation.
 
 ### 1.2.2
 

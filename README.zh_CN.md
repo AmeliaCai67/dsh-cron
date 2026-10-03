@@ -38,6 +38,16 @@ dsh plugin --profile web add github:AmeliaCai67/dsh-cron
 > 第一条就是本插件在 0.2.0 上「装了但完全没反应」的真正原因 —— 它连加载都没通过。
 > 排查方法：`dsh --profile web --help`，看有没有 `skipping profile bundle` / `disabling profile plugin row`。
 
+**`v1.2.2` 在 DSH `0.2.0-rc.2` 及以后【同样跑不起来】** —— 还有第四处破坏性变更，`v1.3.0` 修好：
+
+| 变更 | 以前 | 现在 | 本插件的处理 |
+|---|---|---|---|
+| **schemastery API** | `z.string().optional()` | **`.optional()` 已移除** —— schema 默认就是可选，要必填才写 `.required()` | 已改。不改的话插件 import 直接失败：`TypeError: z.string(...).optional is not a function`。⚠️ peer 范围（`^3.18.1`）**拦不住**这个，所以它会照常装上，直到你**下一次重启 DSH** 才暴露。 |
+
+> 最后这点值得单独记住：**插件可能已经坏了好几天，却一点症状都没有** ——
+> 因为**正在运行**的 DSH 进程一直在用它启动时加载的那份模块图。
+> 不重启，日志里什么都不会有。
+
 ---
 
 ## 安装
@@ -160,6 +170,13 @@ npm pack                                                  # 打包
 ---
 
 ## 变更记录
+
+### 1.3.0
+
+- **修：在 DSH `0.2.0-rc.2` 及以后加载失败。** `schemastery` 3.18.x 移除了 `.optional()`，而配置 schema 里用了 `z.string().optional()`，import 时直接抛 `TypeError: z.string(...).optional is not a function`。schema 默认就是可选，所以这个调用直接删掉即可。详见 [DSH 版本兼容](#dsh-版本兼容)。
+- **设置面板：任务列表改成树状折叠。** 每个任务只显示 名称 / 状态徽章 / cron / 下次执行 + 一行命令预览；点标题行展开完整命令、冒烟结果、上次执行与输出、以及操作按钮。新建表单收在「＋ 新建任务」后面，并加了「全部展开 / 全部折叠」。长输出不再刷屏。
+- **命令块和输出块加了「复制」按钮**（右上角；`navigator.clipboard` 不可用时退回 `execCommand`）。
+- 删除加了二次确认。
 
 ### 1.2.2
 
