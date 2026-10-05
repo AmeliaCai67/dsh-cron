@@ -29,7 +29,7 @@ That's the whole install. It installs the package, registers it as a profile bun
 
 > **Not 0.1.x.** `v1.3.0` calls `ctx.shell.execute()`, which only exists from 0.2.0 — on 0.1.x it fails with `ctx.shell.execute is not a function`. (0.1.x had `ctx.shell.run(spec)`, which returned the result directly; see the table below.)
 >
-> ⚠️ `package.json`'s `peerDependencies` still allow `>=0.1.0-rc.6 <0.3.0`, so a 0.1.x install **succeeds and then fails at run time**. That range should be tightened to `>=0.2.0 <0.3.0`.
+> ⚠️ The peer gate is what enforces this. `peerDependencies` declare `>=0.2.0-rc.2 <0.3.0`, so DSH **blocks 0.1.x with an explicit warning** instead of letting it install and fail later. **The `-rc.2` floor is required** — `0.2.0-rc.2` sorts *below* `0.2.0`, so a plain `>=0.2.0` would lock out the rc builds too (verified with `semver@7.8.5` + `{ includePrerelease: true }`, which is what the gate uses).
 
 **Actually verified on:** DSH `0.2.0-rc.2` (2026-10-02) and `0.2.1-alpha.1` (2026-10-04/05 — all 5 tasks loaded and fired, `exit=0`).
 
