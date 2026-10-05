@@ -177,6 +177,11 @@ npm pack                                                  # 打包
 
 ## 变更记录
 
+### 1.3.2
+
+- **修：`scheduled-tasks` skill 一加载就报 `loaded skill "scheduled-tasks" source must be a string`。** 注册走的是 `ctx.skills.register()`，它只给 `provider` 兜底、**不给 `source` 兜底**；而读取时 `Skills.get()` 会拿 provider-definition 校验器校验这条 runtime 记录，其中要求 `source` 是字符串。列表阶段不校验 runtime 条目，所以症状很误导人 —— **skill 能正常列出来，点开才报错**。现在显式传 `source: "dsh-cron-scheduler"`。
+- 不影响定时任务本身：`scheduled_task` 工具、设置面板、插件页 tab 都照常工作。
+
 ### 1.3.0
 
 - **修：在 DSH `0.2.0-rc.2` 及以后加载失败。** `schemastery` 3.18.x 移除了 `.optional()`，而配置 schema 里用了 `z.string().optional()`，import 时直接抛 `TypeError: z.string(...).optional is not a function`。schema 默认就是可选，所以这个调用直接删掉即可。详见 [DSH 版本兼容](#dsh-版本兼容)。

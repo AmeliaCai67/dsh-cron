@@ -177,6 +177,11 @@ When publishing, remember that `cordis.patch.yml` **must stay in the `files` whi
 
 ## Changelog
 
+### 1.3.2
+
+- **Fixed: loading the `scheduled-tasks` skill threw `loaded skill "scheduled-tasks" source must be a string`.** Registration goes through `ctx.skills.register()`, which defaults `provider` but **not `source`**; on load, `Skills.get()` validates the runtime record with the provider-definition validator, which requires `source` to be a string. The listing path does not validate runtime entries, so the symptom is misleading — **the skill lists normally and only fails when opened**. It now passes `source: "dsh-cron-scheduler"` explicitly.
+- No change to scheduling itself: the `scheduled_task` tool, the settings panel, and the Plugins-page tab keep working.
+
 ### 1.3.0
 
 - **Fixed: the plugin does not load on DSH `0.2.0-rc.2` and later.** `schemastery` 3.18.x removed `.optional()`; the config schema used `z.string().optional()`, which threw at import time (`TypeError: z.string(...).optional is not a function`). Schemas are optional by default, so the call is simply gone. See [DSH version compatibility](#dsh-version-compatibility).
