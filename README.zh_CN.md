@@ -25,7 +25,13 @@ dsh plugin --profile web add github:AmeliaCai67/dsh-cron
 
 ## DSH 版本兼容
 
-**要求 DSH ≥ `0.1.0-rc.6`，含 `0.2.0`。**
+**要求 DSH ≥ `0.2.0`。**
+
+> **0.1.x 不行。** `v1.3.0` 调的是 `ctx.shell.execute()`，这个方法从 0.2.0 才有 —— 在 0.1.x 上会报 `ctx.shell.execute is not a function`。（0.1.x 是 `ctx.shell.run(spec)`，直接返回结果；见下表。）
+>
+> ⚠️ `package.json` 的 `peerDependencies` 目前还写着 `>=0.1.0-rc.6 <0.3.0`，所以 0.1.x 用户**装得上，跑起来才炸**。这个范围应该收紧成 `>=0.2.0 <0.3.0`。
+
+**实际验证过的版本：** DSH `0.2.0-rc.2`（2026-10-02）与 `0.2.1-alpha.1`（2026-10-04/05 —— 5 个任务全部正常加载并触发，`exit=0`）。
 
 **`v1.2.0` 在 DSH 0.2.0 上跑不起来** —— 它没适配下面三处 0.2.0 的接口/结构变更。`v1.2.1` 修好了：
 
